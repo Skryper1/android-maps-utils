@@ -38,6 +38,17 @@ android:
     - sys-img-armeabi-v7a-google_apis-$ANDROID_API_LEVEL
     - sys-img-armeabi-v7a-google_apis-$EMULATOR_API_LEVEL
 
+before_install:
+  - echo "LIST SUGGESTED SDK PACKAGES";    android list sdk -e || true
+  - echo "LIST AVAILABLE SDK PACKAGES";    android list sdk -a -e || true
+  - echo "LIST FILTERED SDK PACKAGES";     android update sdk -u -n -t platform,system-image,\
+                                           add-on,extra || true
+  - echo "LIST TARGETS, AVDS AND DEVICES"; android list || true
+  - echo "SHOW SYSTEM IMAGE PROPERTIES";   ls ${IMG_PATH} -Als; cat "${IMG_PATH}/build.prop" || true
+  - echo "SHOW AVD CONFIGURATION";         ls ${AVD_PATH} -Als; cat "${AVD_PATH}/config.ini" || true
+
+install: true
+
 before_script:
   # Create and start emulator
   - echo no | android create avd --force -n test -t "Google Inc.:Google APIs:"$EMULATOR_API_LEVEL -b "${ANDROID_ABI:-armeabi-v7a}" -g "${ANDROID_TAG:-default}"
